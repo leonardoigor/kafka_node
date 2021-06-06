@@ -11,7 +11,7 @@ module.exports = class KafkaServices {
 
         this.kafka = new Kafka({
             clientId: 'login',
-            brokers: ['localhost:9092', 'localhost:9092']
+            brokers: ['localhost:9092', 'localhost:9092', 'localhost:9092']
         })
     }
     async watch(topic) {

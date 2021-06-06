@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import socket from "socket.io-client";
 export default {
   name: "App",
   data: () => ({
@@ -60,15 +59,10 @@ export default {
       e.preventDefault();
       const { pss, email } = this;
       this.client.emit("form_request", { pss, email });
-      this.isloading = true;
-    },
-    socketConnect() {
-      this.client = socket("localhost:3002");
+      // this.isloading = true;
     },
   },
-  mounted() {
-    this.socketConnect();
-  },
+  mounted() {},
   components: {},
   computed: {
     isValid: function () {

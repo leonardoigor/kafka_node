@@ -15,8 +15,10 @@ io.on('connect', socket => {
     console.log('connect');
     socket.on('form_request', req => {
         kafkaService.emit(req, 'login_topic')
+        console.log('emited');
     })
 })
 let port = 3002
 
+console.log('chegou');
 http.listen(port, () => console.log(`${port}`))

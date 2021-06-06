@@ -1,27 +1,35 @@
-const { Kafka } = require('kafkajs')
+const { Kafka, logLevel } = require('kafkajs')
 
 module.exports = class KafkaServices {
     /**  @variation {Kafka} kafka*/
     kafka
-    constructor() {
-        this.connect()
+    constructor(clientId) {
+        this.connect(clientId)
     }
-    connect() {
+    connect(clientId = 'login') {
         const { Kafka } = require('kafkajs')
 
+
         this.kafka = new Kafka({
-            clientId: 'login',
-            brokers: ['localhost:9092', 'localhost:9092']
+            clientId,
+            brokers: ['localhost:9092'],
+            retry: {
+                initialRetryTime: 300,
+                retries: 50
+            },
+            logLevel: logLevel.NOTHING
         })
+
     }
     async watch(topic, eachMessage) {
         const consumer = this.kafka.consumer({ groupId: 'login-group' })
 
         await consumer.connect()
-        await consumer.subscribe({ topic, fromBeginning: true })
+        await consumer.subscribe({ topic, fromBeginning: false })
 
         await consumer.run({
             eachMessage
+
         })
     }
     async emit(data, topic) {

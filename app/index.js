@@ -1,15 +1,48 @@
 console.log('producer');
+const express = require('express')
+const app = express()
 const KafkaServices = require('./Kafka')
 
-const { Kafka } = require('kafkajs')
+const kafkaService = KafkaServices.createKafkaServices('app1')
+// kafkaService.watch('valid_result', ({ message }) => {
+//     let data = message.value.toString()
+//     console.log(data, '--------------------------------------------');
+// })
+
+kafkaService.emit({ status: 'ok' }, 'valid')
+
+app.use((req, res, next) => {
+    req.service = kafkaService
+    return next()
+})
 
 
 
-const kafkaService = KafkaServices.createKafkaServices()
 
-const loginTopicWatch = ({ topic, partition, message }) => {
-    let data = JSON.parse(message.value.toString())
-    console.log(data);
-}
+app.get('/', async (req, res) => {
+    let service = req.service
+    for (let index = 0; index <= 600; index++) {
+        service.emit({ status: index }, 'valid')
 
-kafkaService.watch('login_topic', loginTopicWatch)
+    }
+    console.log('emiting');
+    console.log('sengind');
+    res.send({ status: 'data' })
+})
+
+let port = 5000
+app.listen(port, () => {
+
+
+    console.log('runing', port)
+})
+
+
+// const loginTopicWatch = ({ topic, partition, message }) => {
+//     console.log('loginTopicWatch');
+//     let data = JSON.parse(message.value.toString())
+//     console.log(data);
+//     kafkaService.emit({ status: "200" }, 'login_topic_front');
+// }
+
+// kafkaService.watch('login_topic', loginTopicWatch)
