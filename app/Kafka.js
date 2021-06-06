@@ -14,18 +14,14 @@ module.exports = class KafkaServices {
             brokers: ['localhost:9092', 'localhost:9092']
         })
     }
-    async watch(topic) {
+    async watch(topic, eachMessage) {
         const consumer = this.kafka.consumer({ groupId: 'login-group' })
 
         await consumer.connect()
         await consumer.subscribe({ topic, fromBeginning: true })
 
         await consumer.run({
-            eachMessage: async ({ topic, partition, message }) => {
-                console.log(topic, partition, {
-                    value: message.value.toString(),
-                })
-            },
+            eachMessage
         })
     }
     async emit(data, topic) {

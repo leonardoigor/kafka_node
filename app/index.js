@@ -4,11 +4,12 @@ const KafkaServices = require('./Kafka')
 const { Kafka } = require('kafkajs')
 
 
-const kafka = new Kafka({
-    clientId: 'my-app',
-    brokers: ['localhost:9092']
-})
 
 const kafkaService = KafkaServices.createKafkaServices()
 
-kafkaService.watch('login_topic')
+const loginTopicWatch = ({ topic, partition, message }) => {
+    let data = JSON.parse(message.value.toString())
+    console.log(data);
+}
+
+kafkaService.watch('login_topic', loginTopicWatch)
